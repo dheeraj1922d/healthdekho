@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/healthdekho}
+    username: ${DATABASE_USERNAME:healthdekho}
+    password: ${DATABASE_PASSWORD:healthdekho}
+  flyway:
+    locations: classpath:db/migration,classpath:db/local
+app:
+  security:
+    jwt-secret: ${JWT_SECRET:local-only-change-this-secret-to-a-long-random-value-32chars}
+    token-hours: ${TOKEN_HOURS:12}
+  ai:
+    enabled: ${AI_ENABLED:false}

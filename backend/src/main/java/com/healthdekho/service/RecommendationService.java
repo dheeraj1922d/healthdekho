@@ -34,11 +34,13 @@ public class RecommendationService {
     private final ObjectProvider<ChatClient.Builder> chatClientBuilders;
     private final ObjectMapper objectMapper;
     private final boolean aiEnabled;
+    private final String modelId;
 
     public RecommendationService(CustomerRepository customers, InsuranceProductRepository products,
                                  CustomerPolicyRepository policies, RecommendationRequestRepository requests,
                                  RecommendationItemRepository items, ObjectProvider<ChatClient.Builder> chatClientBuilders,
-                                 ObjectMapper objectMapper, @Value("${app.ai.enabled:true}") boolean aiEnabled) {
+                                 ObjectMapper objectMapper, @Value("${app.ai.enabled:true}") boolean aiEnabled,
+                                 @Value("${spring.ai.bedrock.converse.chat.options.model:amazon.nova-lite-v1:0}") String modelId) {
         this.customers = customers;
         this.products = products;
         this.policies = policies;
@@ -47,6 +49,7 @@ public class RecommendationService {
         this.chatClientBuilders = chatClientBuilders;
         this.objectMapper = objectMapper;
         this.aiEnabled = aiEnabled;
+        this.modelId = modelId;
     }
 
     @Transactional
@@ -62,7 +65,8 @@ public class RecommendationService {
         List<Suggestion> suggestions = suggest(input, age, eligible);
         com.healthdekho.entity.RecommendationRequest entity = requests.save(new com.healthdekho.entity.RecommendationRequest(customer, input.goals(),
                 input.preferredTerm(), emptyToNull(input.preferredPolicyType()), age,
-                suggestions.stream().anyMatch(Suggestion::fromAi) ? "openai" : "healthdekho-ranking", "configured", "rec-v1"));
+                suggestions.stream().anyMatch(Suggestion::fromAi) ? "bedrock-converse" : "healthdekho-ranking",
+                suggestions.stream().anyMatch(Suggestion::fromAi) ? modelId : "deterministic-v1", "rec-v1"));
         List<RecommendationDto> result = new ArrayList<>();
         for (int index = 0; index < suggestions.size(); index++) {
             Suggestion suggestion = suggestions.get(index);
@@ -70,7 +74,7 @@ public class RecommendationService {
             result.add(toDto(suggestion, index + 1));
         }
         return new RecommendationResponse(entity.getId(), age,
-                suggestions.stream().anyMatch(Suggestion::fromAi) ? "openai" : "healthdekho-ranking",
+                suggestions.stream().anyMatch(Suggestion::fromAi) ? "bedrock-converse" : "healthdekho-ranking",
                 entity.getRequestedAt(), result);
     }
 

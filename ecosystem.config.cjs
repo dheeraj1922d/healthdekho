@@ -6,7 +6,7 @@ module.exports = {
       script: '/usr/bin/mvn',
       args: '-q spring-boot:run',
       interpreter: 'none',
-      env: { PORT: '8080', AI_ENABLED: 'true' },
+      env: { PORT: '8080', SPRING_PROFILES_ACTIVE: 'local', AI_ENABLED: 'false', AWS_REGION: 'us-east-1', JAVA_TOOL_OPTIONS: '-Xmx320m -XX:MaxMetaspaceSize=160m' },
       watch: false,
       instances: 1,
       exec_mode: 'fork',
