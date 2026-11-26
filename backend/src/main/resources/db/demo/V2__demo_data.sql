@@ -1,4 +1,6 @@
--- Local-only sample accounts and policies. This location is enabled by the local profile only.
+-- OPTIONAL demo data so you can log in right away.
+-- Delete this file before building if you do not want sample customers.
+-- All demo users share the password: HealthDekho123!
 INSERT INTO customer(customer_id, email, password_hash, full_name, date_of_birth, phone, status) VALUES
 (1001, 'aarav.sharma@example.com', '$2b$10$IPg9xL5sH6Qwe.W5GtJrdeSU6aUY.jiKYCYkNAiBhhxLDqZPBut1O', 'Aarav Sharma', '1990-04-15', '9876501001', 'ACTIVE'),
 (1002, 'meera.iyer@example.com', '$2b$10$IPg9xL5sH6Qwe.W5GtJrdeSU6aUY.jiKYCYkNAiBhhxLDqZPBut1O', 'Meera Iyer', '1985-09-22', '9876501002', 'ACTIVE'),
@@ -19,3 +21,4 @@ SELECT setval(pg_get_serial_sequence('customer','customer_id'), (SELECT MAX(cust
 SELECT setval(pg_get_serial_sequence('customer_policy','policy_id'), (SELECT MAX(policy_id) FROM customer_policy));
 SELECT setval(pg_get_serial_sequence('premium_installment','installment_id'), (SELECT MAX(installment_id) FROM premium_installment));
 SELECT setval(pg_get_serial_sequence('premium_payment','payment_id'), (SELECT MAX(payment_id) FROM premium_payment));
+

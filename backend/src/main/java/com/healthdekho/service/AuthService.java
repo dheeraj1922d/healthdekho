@@ -23,7 +23,7 @@ public class AuthService {
     private final long tokenHours;
 
     public AuthService(CustomerRepository customers, PasswordEncoder passwordEncoder, JwtEncoder jwtEncoder,
-                       @Value("${app.security.token-hours:12}") long tokenHours) {
+                       @Value("${app.token-hours:12}") long tokenHours) {
         this.customers = customers;
         this.passwordEncoder = passwordEncoder;
         this.jwtEncoder = jwtEncoder;
